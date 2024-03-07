@@ -1,8 +1,10 @@
 grafana-stack-podman
 =========
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
-[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/CastawayEGR/grafana-stack-podman.svg?logoColor=brightgreen)](https://github.com/CastawayEGR/grafana-stack-podman)
-[![GitHub last commit](https://img.shields.io/github/last-commit/CastawayEGR/grafana-stack-podman.svg?logoColor=brightgreen)](https://github.com/CastawayEGR/grafana-stack-podman)
+[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/LyaSchumacher/grafana-stack-podman.svg?logoColor=brightgreen)](https://github.com/LyaSchumacher/grafana-stack-podman)
+[![GitHub last commit](https://img.shields.io/github/last-commit/LyaSchumacher/grafana-stack-podman.svg?logoColor=brightgreen)](https://github.com/LyaSchumacher/grafana-stack-podman)
+
+Fork from: https://github.com/CastawayEGR/grafana-stack-podman
 
 Grafana Stack for Metrics, Logs, & Traces using Podman
 
@@ -10,7 +12,7 @@ Grafana Stack for Metrics, Logs, & Traces using Podman
 
 Clone this repo locally on your RHEL/CentOS/Rocky Linux/Alma Linux machine.
 
-```$ git clone https://github.com/CastawayEGR/grafana-stack-podman```
+```$ git clone https://github.com/lyaschumacher/grafana-stack-podman.git```
 
 Change to the cloned repo directory.
 
