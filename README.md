@@ -25,6 +25,15 @@ Change to the cloned repo directory.
 cd grafana-stack-podman
 ```
 
+> **_IMPORTANT:_**  
+> To be able to log out of the user you need to enable linger
+> ```sh
+> loginctl enable-linger $USER
+> ```
+> 
+> Maybe you need to adjust the ownership recursive of the 'grafana' directory
+
+
 Now we want to spin this up using podman.
 
 ```sh
