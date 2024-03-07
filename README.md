@@ -10,7 +10,8 @@ Grafana Stack for Metrics, Logs, & Traces using Podman
 
 ## Installation
 
-> **_NOTE:_**  Prequesites: git firewalld(up and running)
+> **_NOTE:_**  Prequesites: git, firewalld(up and running) & Podman
+>              Knowledge about [Rootless networking](https://www.redhat.com/sysadmin/container-networking-podman) is recommended. 
 
 Clone this repo locally on your RHEL/CentOS/Rocky Linux/Alma Linux machine.
 
@@ -29,6 +30,12 @@ Now we want to spin this up using podman.
 ```sh
 podman play kube grafana-stack.yaml
 ```
+
+> **_NOTE:_**  
+> To destroy everything you can run following command
+> ```
+> podman play kube --down grafana-stack.yaml
+> ```
 
 We can verify the stack is up and running by running the following.
 
