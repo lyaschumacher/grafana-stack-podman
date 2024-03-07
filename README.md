@@ -10,27 +10,29 @@ Grafana Stack for Metrics, Logs, & Traces using Podman
 
 ## Installation
 
+Prequesites: git firewalld(up and running)
+
 Clone this repo locally on your RHEL/CentOS/Rocky Linux/Alma Linux machine.
 
-```$ git clone https://github.com/lyaschumacher/grafana-stack-podman.git```
+```git clone https://github.com/lyaschumacher/grafana-stack-podman.git```
 
 Change to the cloned repo directory.
 
-```$ cd grafana-stack-podman```
+```cd grafana-stack-podman```
 
 Now we want to spin this up using podman.
 
-```$ podman play kube grafana-stack.yaml```
+```podman play kube grafana-stack.yaml```
 
 We can verify the stack is up and running by running the following.
 
-```$ podman ps```
+```podman ps```
 
 Next up we can expose Grafana, Mimir, Loki, and Tempo via firewall-cmd.
 
-```$ sudo firewall-cmd --permanent --add-port={3000/tcp,3100/tcp,4317/tcp,4318/tcp,9009/tcp,9095/tcp,9096/tcp,9097/tcp,9411/tcp,14268/tcp}```
+```sudo firewall-cmd --permanent --add-port={3000/tcp,3100/tcp,4317/tcp,4318/tcp,9009/tcp,9095/tcp,9096/tcp,9097/tcp,9411/tcp,14268/tcp}```
 
-```$ sudo firewall-cmd --reload```
+```sudo firewall-cmd --reload```
 
 Once deployed you can browse to the Grafana deployment by visiting http://{machine_ip}:3000 and logging in with the default credentials.
 
