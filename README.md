@@ -33,8 +33,26 @@ cd grafana-stack-podman
 > 
 > Maybe you need to adjust the ownership recursive of the 'grafana' directory
 
+To use traefik on Port 80 and 443 make them available for user to use
 
-Now we want to spin this up using podman.
+In order to run Traefik without root, we need to give the ability for unprivileged users to bind privileged ports by modifying a kernel parameter. Use `sysctl` to do this (as root):
+
+```sh
+sysctl net.ipv4.ip_unprivileged_port_start=80
+```
+
+And to make it persistent, run (also as root):
+
+```sh
+echo "net.ipv4.ip_unprivileged_port_start=80" > /etc/sysctl.d/user_priv_ports.conf
+
+After editing we can spin up traefik using Podman.
+
+```sh
+podman play kube traefik.yaml
+```
+
+Now we want to spin up the grafana stack.
 
 ```sh
 podman play kube grafana-stack.yaml
