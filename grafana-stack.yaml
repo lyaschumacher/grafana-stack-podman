@@ -90,7 +90,6 @@ spec:
             name: tempo
           - mountPath: /mnt/config/tempo-local-config.yaml:Z
             name: tempo-config
-      volumes:
       - hostPath:
           path: ./grafana/data
           type: Directory
