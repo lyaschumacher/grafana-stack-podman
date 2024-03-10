@@ -13,7 +13,7 @@ Grafana Stack for Metrics, Logs, & Traces using Podman
 > **_NOTE:_**  Prequesites: git, firewalld(up and running) & Podman
 >              Knowledge about [Rootless networking](https://www.redhat.com/sysadmin/container-networking-podman) is recommended. 
 
-Clone this repo locally on your RHEL/CentOS/Rocky Linux/Alma Linux machine.
+Clone this repo locally on your RHEL/CentOS/Rocky Linux/Alma Linux/Fedora machine.
 
 ```sh
 git clone https://github.com/lyaschumacher/grafana-stack-podman.git
@@ -24,14 +24,17 @@ Change to the cloned repo directory.
 ```sh
 cd grafana-stack-podman
 ```
+### enable background running for user
 
 > **_IMPORTANT:_**  
 > To be able to log out of the user you need to enable linger
 > ```sh
-> loginctl enable-linger $USER
+> sudo loginctl enable-linger $USER
 > ```
 > 
 > Maybe you need to adjust the ownership recursive of the 'grafana' directory
+
+### allow privilege ports
 
 To use traefik on Port 80 and 443 make them available for user to use
 
@@ -46,12 +49,26 @@ And to make it persistent, run (also as root):
 ```sh
 echo "net.ipv4.ip_unprivileged_port_start=80" > /etc/sysctl.d/user_priv_ports.conf
 ```
+### start traefik
 
 After Editing we can spin up traefik using Podman.
 
 ```sh
 podman play kube traefik.yaml
 ```
+
+### possibible SE-Linux violation
+
+> There is the possibility that you can't start up traefik cause 
+> of a security SE-Linux problem, trying to use the podman socket.
+> To add traefik to your SE-Linux rule, you can run following command.
+
+```sh
+sudo ausearch -c 'traefik' --raw | audit2allow -M my-traefik
+sudo semodule -X 300 -i my-traefik.pp
+```
+
+### start grafana-stack
 
 Now we want to spin up the grafana stack.
 
@@ -71,10 +88,10 @@ We can verify the stack is up and running by running the following.
 podman ps
 ```
 
-Next up we can expose Grafana, Mimir, Loki, and Tempo via firewall-cmd.
+### expose traefik via firewalld
 
 ```sh
-sudo firewall-cmd --permanent --add-port={3000/tcp,3100/tcp,4317/tcp,4318/tcp,9009/tcp,9095/tcp,9096/tcp,9097/tcp,9411/tcp,14268/tcp}
+sudo firewall-cmd --permanent --add-port={80/TCP,443/TCP}
 ```
 
 ```sh
