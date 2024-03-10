@@ -45,8 +45,9 @@ And to make it persistent, run (also as root):
 
 ```sh
 echo "net.ipv4.ip_unprivileged_port_start=80" > /etc/sysctl.d/user_priv_ports.conf
+```
 
-After editing we can spin up traefik using Podman.
+After Editing we can spin up traefik using Podman.
 
 ```sh
 podman play kube traefik.yaml
