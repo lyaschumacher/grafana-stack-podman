@@ -41,13 +41,13 @@ To use traefik on Port 80 and 443 make them available for user to use
 In order to run Traefik without root, we need to give the ability for unprivileged users to bind privileged ports by modifying a kernel parameter. Use `sysctl` to do this (as root):
 
 ```sh
-sysctl net.ipv4.ip_unprivileged_port_start=80
+sudo sysctl net.ipv4.ip_unprivileged_port_start=80
 ```
 
 And to make it persistent, run (also as root):
 
 ```sh
-echo "net.ipv4.ip_unprivileged_port_start=80" > /etc/sysctl.d/user_priv_ports.conf
+echo "net.ipv4.ip_unprivileged_port_start=80" | sudo tee /etc/sysctl.d/user_priv_ports.conf
 ```
 ### start traefik
 
@@ -56,6 +56,20 @@ After Editing we can spin up traefik using Podman.
 ```sh
 podman play kube traefik.yaml
 ```
+### possible your podman doesnt run in the user session
+
+Verify if your podman socket is running
+
+```sh
+systemctl --user status podman.socket
+```
+
+Run podman socket
+
+```sh
+systemctl --user enable --now podman.socket
+```
+
 
 ### possibible SE-Linux violation
 
@@ -91,12 +105,24 @@ podman ps
 ### expose traefik via firewalld
 
 ```sh
-sudo firewall-cmd --permanent --add-port={80/TCP,443/TCP}
+sudo firewall-cmd --permanent --add-port={80/tcp,443/tcp}
 ```
+
+> staging:
+> 
+>```sh
+>sudo firewall-cmd --permanent --add-port={8080/tcp}
+>```
+
 
 ```sh
 sudo firewall-cmd --reload
 ```
+
+```sh
+sudo firewall-cmd --list-all
+```
+
 
 Once deployed you can browse to the Grafana deployment by visiting ```http://{machine_ip}:3000``` and logging in with the default credentials.
 
