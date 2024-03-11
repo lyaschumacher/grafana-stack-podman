@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      containers:
+      - name: traefik
+        image: traefik:2.11
+        network: podman
+        args:
+          - --entrypoints.http.address=:80
+          - --entrypoints.http.http.redirections.entryPoint.to=https
+          - --entrypoints.http.http.redirections.entryPoint.scheme=https
+          - --entrypoints.https.address=:443
+          - --providers.docker=true
+          # prod 
+          #- --api.insecure=false
+          #- --api.dashboard=false
+          #- --certificatesresolvers.lets-encrypt.acme.email=test@example.org
+          #- --certificatesresolvers.lets-encrypt.acme.storage=/etc/traefik/acme-certs.json
+          #- --certificatesresolvers.lets-encrypt.acme.tlschallenge=true
+          #
+          # staging - only use for debugging, cause its possible a security attack point
+          #- --api.insecure=true
+          #- --api.dashboard=true
+          #- --certificatesresolvers.lets-encrypt.acme.email=test@example.org
+          #- --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+          #- --certificatesresolvers.lets-encrypt.acme.tlschallenge=true
+          #- --accesslog
+          #- --log
+          #- --log.level=DEBUG
+        ports:
+          - containerPort: 80
+            hostPort: 80
+          - containerPort: 443
+            hostPort: 443
+          # staging - only use for debugging, cause its possible a security attack point
+          #- containerPort: 8080
+            #hostPort: 8080
+        volumeMounts:
+          - mountPath: /var/run/docker.sock:z
+            name: socket
+          - mountPath: /etc/traefik:z
+            name: traefik
+      volumes:
+        - hostPath:
+            path: /run/user/1000/podman/podman.sock
+            type: File
+          name: socket
+        - hostPath:
+            path: ./traefik
+            type: Directory
+          name: traefik
