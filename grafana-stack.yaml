@@ -12,30 +12,31 @@ spec:
   template:
     metadata:
       labels:
-        app: grafana-stack
+        app: grafana-stack #not finished, labels need to placed here to be
+        # attaced to the containers
     spec:
       containers:
       - name: grafana
         image: docker.io/grafana/grafana:latest
         securityContext:
           runAsUser: 1000
-        ports:
-          - containerPort: 3000
-            hostPort: 3000
-            protocol: TCP
         volumeMounts:
           - mountPath: /etc/grafana/grafana.ini:Z
             name: grafana-config
           - mountPath: /var/lib/grafana:Z
             name: grafana
+        labels:
+          traefik.enable: true
+          traefik.http.routers.grafana.rule: Host'(`grafana.service.example.org`)'
+          traefik.http.routers.grafana.entrypoints: "http,https"
+          traefik.http.services.grafana.loadbalancer.server.port: "3000" 
+          traefik.http.routers.grafana.service: grafana
+          traefik.http.services.grafana.loadbalancer.server.scheme: http
       - name: mimir
         image: docker.io/grafana/mimir:latest
         args:
         - --config.file=/mnt/config/mimir-local-config.yaml
         ports:
-          - containerPort: 9009
-            hostPort: 9009
-            protocol: TCP
           - containerPort: 9095
             hostPort: 9095
             protocol: TCP
@@ -44,6 +45,13 @@ spec:
             name: mimir
           - mountPath: /mnt/config/mimir-local-config.yaml:Z
             name: mimir-config
+        labels:
+          traefik.enable: true
+          traefik.http.routers.grafana-mimir.rule: Host'(`grafana-mimir.service.example.org`)'
+          traefik.http.routers.grafana-mimir.entrypoints: 'http,https'
+          traefik.http.services.grafana-mimir.loadbalancer.server.port: 9009 
+          traefik.http.routers.grafana-mimir.service: grafana-mimir
+          traefik.http.services.grafana-mimir.loadbalancer.server.scheme: http
       - name: loki
         image: docker.io/grafana/loki:latest
         args:
@@ -51,9 +59,6 @@ spec:
         securityContext:
           runAsUser: 1000
         ports:
-          - containerPort: 3100
-            hostPort: 3100
-            protocol: TCP
           - containerPort: 9096
             hostPort: 9096
             protocol: TCP
@@ -62,14 +67,18 @@ spec:
             name: loki
           - mountPath: /mnt/config/loki-local-config.yaml:Z
             name: loki-config
+        labels:
+          traefik.enable: true
+          traefik.http.routers.grafana-loki.rule: Host'(`grafana-loki.service.example.org`)'
+          traefik.http.routers.grafana-loki.entrypoints: 'http,https'
+          traefik.http.services.grafana-loki.loadbalancer.server.port: 3100 
+          traefik.http.routers.grafana-loki.service: 'grafana-loki'
+          traefik.http.services.grafana-loki.loadbalancer.server.scheme: 'http'
       - name: tempo
         image: docker.io/grafana/tempo:latest
         args:
         - --config.file=/mnt/config/tempo-local-config.yaml
         ports:
-          - containerPort: 3200
-            hostPort: 3200
-            protocol: TCP
           - containerPort: 4317
             hostPort: 4317
             protocol: TCP
@@ -90,6 +99,13 @@ spec:
             name: tempo
           - mountPath: /mnt/config/tempo-local-config.yaml:Z
             name: tempo-config
+        labels:
+          traefik.enable: true
+          traefik.http.routers.grafana-tempo.rule: Host'(`grafana-tempo.service.example.org`)'
+          traefik.http.routers.grafana-tempo.entrypoints: "http,https"
+          traefik.http.services.grafana-tempo.loadbalancer.server.port: 3200 
+          traefik.http.routers.grafana-tempo.service: grafana-tempo
+          traefik.http.services.grafana-tempo.loadbalancer.server.scheme: http
       volumes:
       - hostPath:
           path: ./grafana/data
