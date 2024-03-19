@@ -123,6 +123,14 @@ sudo firewall-cmd --reload
 sudo firewall-cmd --list-all
 ```
 
+> remove ports
+> ```sh
+> firewall-cmd --zone=public --remove-port=10050/tcp
+> firewall-cmd --runtime-to-permanent 
+> firewall-cmd --reload
+>```
+
+
 
 Once deployed you can browse to the Grafana deployment by visiting ```http://{machine_ip}:3000``` and logging in with the default credentials.
 
